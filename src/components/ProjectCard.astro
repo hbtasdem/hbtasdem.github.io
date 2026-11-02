@@ -1,0 +1,61 @@
+---
+import AreaTag from './AreaTag.astro';
+import { projectUrl, type Project } from '../lib/projects';
+interface Props { project: Project; headingLevel?: 'h2' | 'h3'; }
+const { project, headingLevel = 'h3' } = Astro.props;
+const d = project.data;
+const Heading = headingLevel;
+const areasAttr = [d.area, ...d.tags].join(' ');
+---
+<article class="card" data-area={d.area} data-areas={areasAttr}>
+  <AreaTag area={d.area} also={d.tags} />
+  <p class="kind">{d.kind}</p>
+  <Heading class="title">
+    {d.caseStudy ? <a href={projectUrl(project)}>{d.title}</a> : d.title}
+  </Heading>
+  <p class="summary">{d.summary}</p>
+  {d.highlights.length > 0 && (
+    <ul class="highlights" aria-label="Highlights">
+      {d.highlights.map((h) => (
+        <li><strong>{h.value}</strong> <span>{h.label}</span></li>
+      ))}
+    </ul>
+  )}
+  {d.caseStudy && <p class="more" aria-hidden="true">Read case study →</p>}
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 1.75rem;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .card[hidden] { display: none; }
+  .kind { font-size: var(--step--1); color: var(--muted); }
+  .title { font-size: var(--step-2); line-height: 1.15; }
+  .title a { text-decoration: none; }
+  .title a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .title a:focus-visible { outline: none; }
+  .card:has(.title a:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .card:has(.title a):hover .title a { text-decoration: underline; text-decoration-thickness: 2px; }
+  .summary { color: var(--muted); }
+  .highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    list-style: none;
+    margin: 0.25rem 0 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+  }
+  .highlights strong { font-weight: 500; color: var(--ink); }
+  .highlights span { color: var(--muted); }
+  .more { margin-top: auto; padding-top: 0.5rem; font-weight: 600; }
+</style>

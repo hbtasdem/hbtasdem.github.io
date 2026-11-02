@@ -1,0 +1,286 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import AreaIcon from '../components/AreaIcon.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { areas } from '../data/areas';
+import { getProjects, projectUrl } from '../lib/projects';
+
+const projects = await getProjects();
+const flagship = projects.find((p) => p.data.flagship)!;
+const rest = projects.filter((p) => !p.data.flagship);
+---
+<Base>
+  <!-- Hero -->
+  <section class="hero wrap" aria-labelledby="hero-name">
+    <div class="hero-text">
+      <p class="cmd mono" aria-hidden="true">&gt; decrypt --name <span class="ok">✓</span></p>
+      <h1 id="hero-name">
+        <span class="sr-only">Hilal Beyza Tasdemir</span>
+        <span class="scramble" aria-hidden="true" data-scramble="Hilal Beyza|Tasdemir">Hilal Beyza<br />Tasdemir</span>
+      </h1>
+      <p class="lede">
+        Software engineer who takes systems from idea to production. I’m happiest where code meets the physical world:
+        <span class="passions"><strong data-area="computer-vision">computer vision</strong> and <strong data-area="security">security</strong>.</span>
+      </p>
+      <p class="mono muted meta">B.S. Computer Engineering · Purdue University · 2026</p>
+      <div class="actions">
+        <a class="btn btn--solid" href="#flagship">See my senior design project</a>
+        <a class="btn" href="/resume.pdf">Resume (PDF)</a>
+        <a class="text-link" href="https://github.com/hbtasdem">GitHub</a>
+        <a class="text-link" href="https://www.linkedin.com/in/hilalbtasdemir">LinkedIn</a>
+      </div>
+    </div>
+    <svg class="hero-art" aria-hidden="true" viewBox="0 0 340 340" fill="none">
+      <rect x="10" y="10" width="320" height="320" rx="8" style="stroke: var(--line)" stroke-width="1.5" />
+      <path d="M10 80h320M10 150h320M10 220h320M10 290h320" style="stroke: var(--line)" stroke-dasharray="3 6" />
+      <circle cx="110" cy="120" r="44" style="stroke: var(--cv)" stroke-width="2" />
+      <path d="M110 60v28M110 152v28M50 120h28M142 120h28" style="stroke: var(--cv)" stroke-width="2" />
+      <rect x="196" y="170" width="84" height="72" rx="6" style="stroke: var(--sec)" stroke-width="2" />
+      <path d="M214 170v-22a24 24 0 0 1 48 0v22" style="stroke: var(--sec)" stroke-width="2" />
+      <circle cx="238" cy="204" r="7" style="fill: var(--sec)" />
+      <path d="M70 270 L150 230 L210 290 L290 90" style="stroke: var(--swe)" stroke-width="2" />
+      <circle cx="70" cy="270" r="7" style="fill: var(--bg); stroke: var(--swe)" stroke-width="2" />
+      <circle cx="150" cy="230" r="7" style="fill: var(--bg); stroke: var(--swe)" stroke-width="2" />
+      <circle cx="210" cy="290" r="7" style="fill: var(--bg); stroke: var(--swe)" stroke-width="2" />
+      <circle cx="290" cy="90" r="7" style="fill: var(--swe)" />
+    </svg>
+  </section>
+
+  <!-- Flagship -->
+  <section id="flagship" class="flagship surface" data-area="swe-ai" aria-labelledby="flagship-h">
+    <div class="wrap section flagship-grid">
+      <div>
+        <p class="eyebrow">Flagship · Team senior design project · {flagship.data.timeline}</p>
+        <h2 id="flagship-h" class="flagship-title">{flagship.data.title}</h2>
+        <p class="flagship-sub">{flagship.data.summary}</p>
+        <p class="muted flagship-body">
+          Our team of 4 built turn-by-turn audio navigation and collision alerts for Purdue’s BHEE building. As Navigation Lead,
+          I turned hand-measured floor plans into a routable graph, rebuilt the AWS backend for production, and reworked the map
+          after our first round of user testing.
+        </p>
+        <ul class="stats" aria-label="Stride highlights">
+          {flagship.data.highlights.map((h) => (
+            <li><strong>{h.value}</strong> <span>{h.label}</span></li>
+          ))}
+        </ul>
+        <a class="btn btn--accent" href={projectUrl(flagship)}>Read the Stride case study</a>
+      </div>
+      {flagship.data.cover && (
+        <Image class="flagship-shot" src={flagship.data.cover} alt={flagship.data.coverAlt ?? ''} widths={[260, 520]} sizes="260px" />
+      )}
+    </div>
+  </section>
+
+  <!-- Areas -->
+  <section class="wrap section" aria-labelledby="areas-h">
+    <h2 id="areas-h">Three things I build</h2>
+    <ul class="doors">
+      {areas.map((a) => (
+        <li data-area={a.id}>
+          <div class="door">
+            <p class="door-tag mono" aria-hidden="true"><AreaIcon area={a.id} />{a.number} · {a.label}</p>
+            <h3 class="door-title"><a href={`/${a.id}/`}>{a.name}</a></h3>
+            <p class="door-text">{a.doorText}</p>
+            <p class="door-more" aria-hidden="true">Explore →</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- More work -->
+  <section class="wrap section rule-top" aria-labelledby="work-h">
+    <div class="work-head">
+      <h2 id="work-h">More work</h2>
+      <div class="filters" role="group" aria-label="Filter projects by area" data-filters hidden>
+        <button type="button" aria-pressed="true" data-filter="all">All</button>
+        {areas.map((a) => (
+          <button type="button" aria-pressed="false" data-filter={a.id} data-area={a.id}>
+            <AreaIcon area={a.id} size={16} />{a.label}
+          </button>
+        ))}
+      </div>
+    </div>
+    <p class="sr-only" role="status" data-filter-status></p>
+    <div class="grid" data-cards>
+      {rest.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+
+  <!-- Beyond code -->
+  <section class="wrap section rule-top beyond" aria-labelledby="beyond-h">
+    <h2 id="beyond-h">Beyond code</h2>
+    <ul>
+      <li>
+        <p class="eyebrow">Teaching</p>
+        <p>Undergraduate TA for a graduate-level AI course (ECE 57000), and for embedded-systems labs with 200+ students (ECE 36200).</p>
+      </li>
+      <li>
+        <p class="eyebrow">Leadership</p>
+        <p>President of the Purdue Muslim Student Association. Grew event attendance 60% and secured $15,000+ in grants. 2026 Dean Betty Nelson Student Organization Service Award.</p>
+      </li>
+    </ul>
+    <a class="text-link" href="/about/">More about me →</a>
+  </section>
+</Base>
+
+<script>
+  // Name "decrypt" effect. The real name is in the sr-only span; this only animates the visual copy.
+  const el = document.querySelector<HTMLElement>('[data-scramble]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (el && !reduce) {
+    const lines = (el.dataset.scramble ?? '').split('|');
+    const glyphs = 'abcdefghijklmnopqrstuvwxyz#%&*+=?!$@0123456789';
+    const total = 1100;
+    const start = performance.now();
+    const render = (t: number) => {
+      const p = Math.min(1, (t - start) / total);
+      el.innerHTML = lines
+        .map((line) =>
+          [...line]
+            .map((ch, i) => {
+              if (ch === ' ') return ' ';
+              const reveal = i / line.length;
+              return p >= reveal * 0.85 + 0.15 ? ch : glyphs[Math.floor(Math.random() * glyphs.length)];
+            })
+            .join('')
+        )
+        .join('<br>');
+      if (p < 1) requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
+  }
+
+  // Project filter (progressive enhancement: hidden without JS).
+  const bar = document.querySelector<HTMLElement>('[data-filters]');
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-cards] > [data-areas]')];
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+  if (bar) {
+    bar.hidden = false;
+    const buttons = [...bar.querySelectorAll<HTMLButtonElement>('button')];
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const f = b.dataset.filter!;
+        buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        let shown = 0;
+        cards.forEach((c) => {
+          const match = f === 'all' || (c.dataset.areas ?? '').split(' ').includes(f);
+          c.hidden = !match;
+          if (match) shown++;
+        });
+        if (status) status.textContent = `Showing ${shown} project${shown === 1 ? '' : 's'}.`;
+      })
+    );
+  }
+</script>
+
+<style>
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-l);
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero-text { flex: 999 1 34rem; min-width: 0; }
+  .hero-art { flex: 1 1 16rem; max-width: 21rem; margin-inline: auto; }
+  @media (max-width: 40rem) { .hero-art { display: none; } }
+  .cmd { font-size: var(--step--1); color: var(--muted); letter-spacing: 0.04em; margin-bottom: 1rem; }
+  .cmd .ok { color: var(--cv); }
+  h1 { line-height: 0.98; }
+  .scramble { display: block; }
+  .lede { margin-top: var(--space-m); max-width: 40rem; font-size: var(--step-1); line-height: 1.5; }
+  .passions { display: block; }
+  .passions strong { color: var(--accent); }
+  .meta { margin-top: 0.75rem; font-size: var(--step--1); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-top: var(--space-l); }
+
+  .flagship { border-block: 1px solid var(--line); }
+  .flagship-grid { display: flex; flex-wrap: wrap; gap: var(--space-l); align-items: center; }
+  .flagship-grid > div { flex: 999 1 30rem; min-width: 0; }
+  .flagship-title { font-size: var(--step-5); margin-top: 0.75rem; }
+  .flagship-sub { margin-top: 0.5rem; font-size: var(--step-1); }
+  .flagship-body { margin-top: var(--space-s); max-width: 38rem; }
+  .flagship-shot { flex: 0 1 15rem; width: 15rem; margin-inline: auto; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-s);
+    margin: var(--space-l) 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stats li { display: flex; flex-direction: column; gap: 0.25rem; border-top: 2px solid var(--accent); padding-top: 0.75rem; }
+  .stats strong { font-family: var(--font-display); font-weight: 700; font-size: var(--step-2); line-height: 1.1; }
+  .stats span { font-size: var(--step--1); color: var(--muted); }
+
+  .doors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-m);
+    list-style: none;
+    margin: var(--space-l) 0 0;
+    padding: 0;
+  }
+  .door {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+    min-height: 19rem;
+    padding: 1.75rem;
+    border: 1.5px solid var(--line);
+    border-top: 6px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+    position: relative;
+  }
+  .door-title a { text-decoration: none; }
+  .door-title a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .door-title a:focus-visible { outline: none; }
+  .door:has(a:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .door:hover .door-title a { text-decoration: underline; text-decoration-thickness: 2px; }
+  .door-tag { display: flex; align-items: center; gap: 0.625rem; font-size: var(--step--1); color: var(--accent); letter-spacing: 0.04em; }
+  .door-tag, .door-text, .door-more { margin: 0; }
+  .door-title { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: var(--step-3); line-height: 1.08; letter-spacing: -0.02em; }
+  .door-text { color: var(--muted); }
+  .door-more { margin-top: auto; font-weight: 600; }
+
+  .work-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--space-s); }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .filters button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--control);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9375rem;
+    cursor: pointer;
+  }
+  .filters button :global(svg) { color: var(--accent); }
+  .filters button[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .filters button[aria-pressed='true'] :global(svg) { color: var(--bg); }
+  .filters[hidden] { display: none; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-m);
+    margin-top: var(--space-l);
+  }
+
+  .beyond ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-m);
+    list-style: none;
+    margin: var(--space-m) 0 var(--space-s);
+    padding: 0;
+  }
+  .beyond .eyebrow { margin-bottom: 0.375rem; }
+</style>

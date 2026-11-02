@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+
+const skills = [
+  { group: 'Computer Vision & ML', items: ['OpenCV', 'Vision Transformers', 'Transfer learning', 'Hugging Face', 'Roboflow'] },
+  { group: 'Security', items: ['AES', 'DES', 'RC4', 'SHA-1 / SHA-512', 'Threat modeling'] },
+  { group: 'Languages', items: ['Python', 'TypeScript', 'JavaScript', 'C', 'C++', 'SQL', 'Assembly'] },
+  { group: 'Frameworks', items: ['React Native', 'FastAPI', 'Flask', 'Node.js', 'OpenGL', 'Three.js'] },
+  { group: 'Cloud & tooling', items: ['AWS (CDK, Lambda, API Gateway, RDS, EC2, CloudWatch)', 'GCP', 'Firebase', 'Docker', 'GitHub Actions', 'pytest', 'Selenium'] },
+];
+---
+<Base title="About" description="About Hilal Beyza Tasdemir: education, teaching, leadership and skills.">
+  <section class="wrap section">
+    <p class="eyebrow">About</p>
+    <h1>Hilal Beyza Tasdemir</h1>
+    <p class="lede">I’m a computer engineer who takes systems from idea to production and builds technology that solves real problems for real people. I’m most at home in computer vision and security.</p>
+  </section>
+
+  <div class="wrap columns">
+    <section aria-labelledby="edu-h">
+      <h2 id="edu-h">Education</h2>
+      <p class="strong">B.S. Computer Engineering, Purdue University</p>
+      <p class="muted">Elmore Family School of Electrical and Computer Engineering · Aug 2022 – May 2026</p>
+      <ul>
+        <li>Certificate of Entrepreneurship</li>
+        <li>Concentration in Software Engineering</li>
+        <li>Minor in Mathematics</li>
+        <li>Coursework: Computer Security, Computer Graphics, Artificial Intelligence, Software Engineering, Data Structures</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="teach-h">
+      <h2 id="teach-h">Teaching</h2>
+      <p class="strong">Undergraduate Teaching Assistant, Purdue University</p>
+      <p class="muted">Aug 2025 – May 2026</p>
+      <ul>
+        <li>Selected as an undergraduate TA for a graduate-level AI course (ECE 57000), supporting instruction and grading for ML topics.</li>
+        <li>Assisted programming labs for 200+ students in ECE 36200, covering embedded systems in Assembly and C on the Raspberry Pi RP2350B.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="lead-h">
+      <h2 id="lead-h">Leadership</h2>
+      <p class="strong">Purdue Muslim Student Association</p>
+      <p class="muted">President, May 2025 – May 2026 · Treasurer, May 2024 – May 2025</p>
+      <ul>
+        <li>Led a 14-member board for a 200+ member organization, growing event attendance by 60% while expanding into professional networking, interfaith and civic engagement events.</li>
+        <li>Secured the SOGA grant 5 times, raising $15,000+ in external funding across two years to sustain 30+ events per semester.</li>
+        <li>Managed $20,000+ in cumulative organizational finances, overseeing budgeting, allocation and reporting.</li>
+        <li>Received the Dean Betty Nelson Student Organization Service Award (2026), given to one organization university-wide each year.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="skills-h">
+      <h2 id="skills-h">Skills</h2>
+      <dl class="skills">
+        {skills.map((s) => (
+          <div><dt>{s.group}</dt><dd>{s.items.join(' · ')}</dd></div>
+        ))}
+      </dl>
+    </section>
+  </div>
+
+  <section class="wrap section">
+    <div class="contact surface">
+      <h2>Get in touch</h2>
+      <p>The best way to reach me is email.</p>
+      <p class="actions">
+        <a class="btn btn--solid" href="mailto:hilalbtasdemir@gmail.com">hilalbtasdemir@gmail.com</a>
+        <a class="btn" href="/resume.pdf">Resume (PDF)</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  h1 { margin-top: var(--space-s); font-size: var(--step-5); }
+  .lede { margin-top: var(--space-m); max-width: 44rem; font-size: var(--step-1); line-height: 1.5; }
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));
+    gap: var(--space-xl) var(--space-l);
+  }
+  .columns h2 { font-size: var(--step-3); margin-bottom: var(--space-s); }
+  .strong { font-weight: 600; }
+  .columns ul { margin: var(--space-s) 0 0; padding-left: 1.3rem; }
+  .columns li + li { margin-top: 0.4rem; }
+  .skills { margin: 0; display: grid; gap: var(--space-s); }
+  .skills dt { font-family: var(--font-mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .skills dd { margin: 0.2rem 0 0; }
+  .contact { padding: var(--space-l); border: 1px solid var(--line); border-radius: var(--radius); }
+  .contact p { margin-top: 0.5rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-m) !important; }
+</style>

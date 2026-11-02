@@ -1,0 +1,80 @@
+/*
+  Design tokens. Every text color here passes WCAG AA (4.5:1) against both
+  --bg and --surface in its theme. --line is decorative only; control borders
+  use --control, which passes 3:1.
+*/
+:root {
+  color-scheme: light;
+  --bg: #F6F4EF;
+  --surface: #FFFFFF;
+  --ink: #16181D;
+  --muted: #545862;
+  --line: #DDD8CE;
+  --control: #545862;
+  --cv: #0B6E6E;        /* Computer Vision, 5.5:1 on bg */
+  --sec: #8F5208;       /* Security, 5.7:1 on bg */
+  --swe: #5B3FB5;       /* SWE & AI, 6.8:1 on bg */
+  --on-accent: #FFFFFF;
+  --focus: #5B3FB5;
+
+  --font-display: 'Bricolage Grotesque Variable', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.3125rem;
+  --step-2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem);
+  --step-3: clamp(1.875rem, 1.4rem + 2vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.5rem + 3.4vw, 3.5rem);
+  --step-5: clamp(2.75rem, 1.6rem + 5.2vw, 5.5rem);
+
+  --space-xs: 0.5rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: clamp(4rem, 3rem + 4vw, 6rem);
+
+  --radius: 10px;
+  --radius-s: 6px;
+  --measure: 70ch;
+  --page: 75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #121418;
+    --surface: #1A1D23;
+    --ink: #ECEAE4;
+    --muted: #A6A9B1;
+    --line: #2E323A;
+    --control: #A6A9B1;
+    --cv: #4FC4C0;
+    --sec: #F0B45A;
+    --swe: #A894F5;
+    --on-accent: #121418;
+    --focus: #A894F5;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #121418;
+  --surface: #1A1D23;
+  --ink: #ECEAE4;
+  --muted: #A6A9B1;
+  --line: #2E323A;
+  --control: #A6A9B1;
+  --cv: #4FC4C0;
+  --sec: #F0B45A;
+  --swe: #A894F5;
+  --on-accent: #121418;
+  --focus: #A894F5;
+}
+
+/* Area accent: set data-area on any element to switch its --accent. */
+[data-area='computer-vision'] { --accent: var(--cv); }
+[data-area='security'] { --accent: var(--sec); }
+[data-area='swe-ai'] { --accent: var(--swe); }

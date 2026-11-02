@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import AreaIcon from '../components/AreaIcon.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { areas, type Area } from '../data/areas';
+import { getProjects, inArea } from '../lib/projects';
+
+export async function getStaticPaths() {
+  return areas.map((area) => ({ params: { area: area.id }, props: { area } }));
+}
+
+const { area } = Astro.props as { area: Area };
+const projects = (await getProjects()).filter((p) => inArea(p, area.id));
+const primary = projects.filter((p) => p.data.area === area.id);
+const related = projects.filter((p) => p.data.area !== area.id);
+---
+<Base title={area.name} description={area.intro} area={area.id}>
+  <section class="intro rule-bottom" data-area={area.id}>
+    <div class="wrap section intro-grid">
+      <div>
+        <p class="eyebrow tag"><AreaIcon area={area.id} />{area.number} · {area.label}</p>
+        <h1>{area.name}</h1>
+        <p class="lede">{area.intro}</p>
+      </div>
+      <div class="motif" aria-hidden="true">
+        {area.id === 'computer-vision' && (
+          <svg viewBox="0 0 220 220" fill="none">
+            <path d="M0 55h220M0 110h220M0 165h220" style="stroke: var(--line)" stroke-dasharray="3 6" />
+            <rect x="40" y="40" width="140" height="140" rx="6" style="stroke: var(--line)" stroke-width="1.5" />
+            <circle cx="110" cy="110" r="46" style="stroke: var(--accent)" stroke-width="2" />
+            <path d="M110 30v40M110 150v40M30 110h40M150 110h40" style="stroke: var(--accent)" stroke-width="2" />
+          </svg>
+        )}
+        {area.id === 'security' && (
+          <p class="cipher mono">
+            <span>plaintext&nbsp;&nbsp;<b>meet at 5</b></span>
+            <span>key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>●●●●●●●●●●●●●●●●</i></span>
+            <span>iv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7c1e…a40b</span>
+            <span class="out">cipher&nbsp;&nbsp;&nbsp;&nbsp;<i>q#9Ł·x2!ƒ7∆0k$Wz</i></span>
+          </p>
+        )}
+        {area.id === 'swe-ai' && (
+          <svg viewBox="0 0 220 220" fill="none">
+            <path d="M30 180 L80 120 L130 160 L190 50 M80 120 L120 60 L190 50" style="stroke: var(--accent)" stroke-width="2" />
+            {[[30,180],[80,120],[130,160],[120,60]].map(([x, y]) => (
+              <circle cx={x} cy={y} r="8" style="fill: var(--surface); stroke: var(--accent)" stroke-width="2" />
+            ))}
+            <circle cx="190" cy="50" r="8" style="fill: var(--accent)" />
+          </svg>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="work-h">
+    <h2 id="work-h">Work</h2>
+    <div class="grid">
+      {primary.map((p) => <ProjectCard project={p} />)}
+    </div>
+    {related.length > 0 && (
+      <>
+        <h2 class="related-h">Also relevant</h2>
+        <div class="grid">
+          {related.map((p) => <ProjectCard project={p} />)}
+        </div>
+      </>
+    )}
+  </section>
+</Base>
+
+<style>
+  .rule-bottom { border-bottom: 1px solid var(--line); }
+  .intro-grid { display: flex; flex-wrap: wrap; gap: var(--space-l); align-items: center; }
+  .intro-grid > div:first-child { flex: 999 1 32rem; min-width: 0; }
+  .tag { display: flex; align-items: center; gap: 0.625rem; }
+  h1 { margin-top: var(--space-s); font-size: var(--step-5); }
+  .lede { margin-top: var(--space-m); max-width: 42rem; font-size: var(--step-1); line-height: 1.5; }
+  .motif { flex: 1 1 14rem; max-width: 18rem; margin-inline: auto; }
+  .cipher {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.25rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .cipher b { font-weight: 400; color: var(--ink); }
+  .cipher i { font-style: normal; color: var(--accent); }
+  .cipher .out { border-top: 1px dashed var(--line); margin-top: 0.5rem; padding-top: 0.5rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-m);
+    margin-top: var(--space-l);
+  }
+  .related-h { margin-top: var(--space-2xl); font-size: var(--step-2); }
+</style>
